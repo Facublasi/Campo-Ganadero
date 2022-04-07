@@ -3,14 +3,14 @@ USE campo;
 
  -- Creacion de tabla condicion fiscal, funcion ser la tabla donde se guarden las condiciones fiscales de las personas con los cuales trabajamos
 CREATE TABLE Condicion_Fisca(
-id_condicion_fiscal CHAR(2) NOT NULL PRIMARY KEY,
+id_condicion_fiscal INT NOT NULL PRIMARY KEY,
 Condicion_fiscal VARCHAR (50)
 );
 
 -- creacion de tabla clase de animales, tabla que se relaciona con las tabla "madres-padre-crias" nos indica las clases de animales que tiene 
 -- y podemos tener en nuestro stok
 CREATE TABLE Clase_de_animal(
-id_clase CHAR(2) NOT NULL PRIMARY KEY,
+id_clase INT NOT NULL PRIMARY KEY,
 CLASE VARCHAR (50)
 );
 
@@ -18,7 +18,7 @@ CLASE VARCHAR (50)
 -- y podemos tener en nuestro stok
 
 CREATE TABLE Categoria_de_animal(
-id_categoria CHAR(2) NOT NULL PRIMARY KEY,
+id_categoria INT NOT NULL PRIMARY KEY,
 Categoria VARCHAR (50)
 );
 
@@ -27,14 +27,14 @@ Categoria VARCHAR (50)
 -- desarollo del ternero
 
 CREATE TABLE Suplementos(
-ID_suplementos CHAR(2) NOT NULL PRIMARY KEY,
+ID_suplementos INT NOT NULL PRIMARY KEY,
 SUPLEMENTO VARCHAR (50)
 );
 
 -- tabla donde se almacenan los registros de las peronas con a las cuales les hemos comproado o podemos comprarle hacienda. se relaciona con las tablas crias, m
 -- madre padres
 CREATE TABLE PROVEEDORES(
-ID_PROVEEDOR CHAR(2)  NOT NULL PRIMARY KEY,
+ID_PROVEEDOR INT  NOT NULL PRIMARY KEY,
 CUIT VARCHAR (13) NOT NULL, 
 NOMBRE VARCHAR (20),
 APELLIDO VARCHAR (20) NOT NULL,
@@ -48,11 +48,11 @@ foreign key(ID_CONDICION_FISCAL) REFERENCES Condicion_Fisca (id_condicion_fiscal
 
 -- tabla de registros donde se listan los padres que han pasado por nuestro establecimientos, solo relaciona con la tabla proveedores
 CREATE TABLE PADRES (
-ID_PADRES CHAR(2) NOT NULL PRIMARY KEY,
+ID_PADRES INT NOT NULL PRIMARY KEY,
 NUMERO_CARABANA VARCHAR (10) NOT NULL,
-CLASE CHAR(2) , -- foreign key
-CATEGORIA CHAR(2) NOT NULL, -- foreign key
-ID_PROVEEDOR CHAR(2) NOT NULL, -- foreign key
+CLASE INT , -- foreign key
+CATEGORIA INT NOT NULL, -- foreign key
+ID_PROVEEDOR INT NOT NULL, -- foreign key
 DESCRIPCION VARCHAR (50),
 FEHCA_INGRESO DATE NOT NULL,
 COSTO decimal NOT NULL,
@@ -69,12 +69,12 @@ foreign key(ID_PROVEEDOR) REFERENCES PROVEEDORES (ID_PROVEEDOR)
 -- relacionar de manera directa crias/madre y viceverza 
 
 CREATE TABLE MADRES (
-ID_MADRES CHAR(4) NOT NULL PRIMARY KEY,
+ID_MADRES INT NOT NULL PRIMARY KEY,
 NUMERO_CARABANA VARCHAR (10) NOT NULL,
-CLASE CHAR(2), -- FOREIGN KEY
-CATEGORIA CHAR(2) NOT NULL, -- FOREIGN KEY
-ID_PROVEEDOR CHAR(2) NOT NULL, -- FOREIGN KEY
-COMENTARIO VARCHAR (50),
+CLASE INT, -- FOREIGN KEY
+CATEGORIA INT NOT NULL, -- FOREIGN KEY
+ID_PROVEEDOR INT NOT NULL, -- FOREIGN KEY
+COMENTARIO VARCHAR INT,
 FEHCA_INGRESO DATE NOT NULL,
 COSTO DECIMAL NOT NULL,
 FECHA_EGRESO DATE,
@@ -87,14 +87,14 @@ foreign key(ID_PROVEEDOR) REFERENCES PROVEEDORES (ID_PROVEEDOR)
 
 -- tabla donde se registran todas aquellas personas a las cuales les hemos vendido o podemos venderle hacienda
 CREATE TABLE CLIENTES (
-ID_CLIENTES CHAR(2) NOT NULL PRIMARY KEY,
+ID_CLIENTES INT NOT NULL PRIMARY KEY,
 CUIT VARCHAR(13) NOT NULL, 
 NOMBRE VARCHAR(20),
 APELLIDO VARCHAR(20) NOT NULL,
 DIRECCION VARCHAR(25),
 TELEFONO INT,
 EMAIL VARCHAR(30),
-ID_CONDICION_FISCAL CHAR(2) NOT NULL,
+ID_CONDICION_FISCAL INT NOT NULL,
 FOREIGN KEY (ID_CONDICION_FISCAL) REFERENCES Condicion_Fisca (id_condicion_fiscal)
 );
 
@@ -102,12 +102,12 @@ FOREIGN KEY (ID_CONDICION_FISCAL) REFERENCES Condicion_Fisca (id_condicion_fisca
 -- tabla donde se registran todas las crias que han pasado por nuestro establecimiento y se relaciona con madre-proveedores, a partir de los datos y de su
 -- relacion con las demas tablas es donde encontramos los datos utilies para las decisiones del negocio
 CREATE TABLE CRIAS (
-ID_CRIAS CHAR(5)  NOT NULL PRIMARY KEY,
+ID_CRIAS INT  NOT NULL PRIMARY KEY,
 NUMERO_CARABANA VARCHAR (10) NOT NULL,
-CLASE CHAR(2) NOT NULL, -- FOREIGN KEY
-CATEGORIA CHAR(2) NOT NULL, -- FOREIGN KEY
-ID_PROVEEDOR CHAR(2) NOT NULL, -- FOREIGN KEY
-ID_MADRE CHAR(4) NOT NULL, -- FOREIGN KEY
+CLASE INT NOT NULL, -- FOREIGN KEY
+CATEGORIA INT NOT NULL, -- FOREIGN KEY
+ID_PROVEEDOR INT NOT NULL, -- FOREIGN KEY
+ID_MADRE INT NOT NULL, -- FOREIGN KEY
 COMENTARIO VARCHAR (90), 
 FECHA_INGRESO DATE NOT NULL,
 COSTO DECIMAL,
@@ -115,7 +115,7 @@ FECHA_DESTETE DATE,
 PESO_DESTETE DECIMAL,
 FECHA_ENTRADA_ENGORDE DATE,
 PESO_ENTRADA_ENGORDE DECIMAL,
-SUPLEMENTOS CHAR(2) NOT NULL, -- FOREIGN KEY
+SUPLEMENTOS INT NOT NULL, -- FOREIGN KEY
 MOTIVO_EGRESO VARCHAR (90),
 FOREIGN KEY (CLASE) REFERENCES Clase_de_animal (id_clase),
 FOREIGN KEY (CATEGORIA) REFERENCES Categoria_de_animal (id_categoria),
