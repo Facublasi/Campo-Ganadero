@@ -1,21 +1,16 @@
-CREATE SCHEMA Campo;
+CREATE SCHEMA campo;
 USE campo;
 
- -- Creacion de tabla condicion fiscal, funcion ser la tabla donde se guarden las condiciones fiscales de las personas con los cuales trabajamos
-CREATE TABLE Condicion_Fisca(
+CREATE TABLE Condicion_Fiscal(
 id_condicion_fiscal INT NOT NULL PRIMARY KEY,
 Condicion_fiscal VARCHAR (50)
 );
 
--- creacion de tabla clase de animales, tabla que se relaciona con las tabla "madres-padre-crias" nos indica las clases de animales que tiene 
--- y podemos tener en nuestro stok
+
 CREATE TABLE Clase_de_animal(
 id_clase INT NOT NULL PRIMARY KEY,
 CLASE VARCHAR (50)
 );
-
--- creacion de tabla categoria , tabla que se relaciona con las tabla "madres-padre-crias" nos indica la categoria de animales que tiene 
--- y podemos tener en nuestro stok
 
 CREATE TABLE Categoria_de_animal(
 id_categoria INT NOT NULL PRIMARY KEY,
@@ -23,16 +18,12 @@ Categoria VARCHAR (50)
 );
 
 
--- creacion de tabla suplemetos , tabla que se relaciona con la tabla "crias" nos indica los procesos productivos o suplementos que le hemos aportado al
--- desarollo del ternero
-
 CREATE TABLE Suplementos(
 ID_suplementos INT NOT NULL PRIMARY KEY,
 SUPLEMENTO VARCHAR (50)
 );
 
--- tabla donde se almacenan los registros de las peronas con a las cuales les hemos comproado o podemos comprarle hacienda. se relaciona con las tablas crias, m
--- madre padres
+
 CREATE TABLE PROVEEDORES(
 ID_PROVEEDOR INT  NOT NULL PRIMARY KEY,
 CUIT VARCHAR (13) NOT NULL, 
@@ -41,12 +32,10 @@ APELLIDO VARCHAR (20) NOT NULL,
 DIRECCION VARCHAR (25), 
 TELEFONO VARCHAR (30),
 EMAIL VARCHAR (30),
-ID_CONDICION_FISCAL CHAR (2)  NOT NULL, -- foreign key
-foreign key(ID_CONDICION_FISCAL) REFERENCES Condicion_Fisca (id_condicion_fiscal)
+ID_CONDICION_FISCAL INT  NOT NULL -- foreign key
 );	
 
 
--- tabla de registros donde se listan los padres que han pasado por nuestro establecimientos, solo relaciona con la tabla proveedores
 CREATE TABLE PADRES (
 ID_PADRES INT NOT NULL PRIMARY KEY,
 NUMERO_CARABANA VARCHAR (10) NOT NULL,
@@ -58,15 +47,9 @@ FEHCA_INGRESO DATE NOT NULL,
 COSTO decimal NOT NULL,
 FECHA_EGRESO DATE,
 PRECIO_VENTA DECIMAL ,
-MOTIVO_EGRESO VARCHAR (50),
-FOREIGN KEY (CLASE) REFERENCES Clase_de_animal (id_clase),
-FOREIGN KEY (CATEGORIA) REFERENCES Categoria_de_animal (id_categoria),
-foreign key(ID_PROVEEDOR) REFERENCES PROVEEDORES (ID_PROVEEDOR)
+MOTIVO_EGRESO VARCHAR (50)
 );
 
-
--- tabla donde se registran todas las madres que han pasado por nuestro establecimiento, se relaciona con las tablas proveedores y crias para poder
--- relacionar de manera directa crias/madre y viceverza 
 
 CREATE TABLE MADRES (
 ID_MADRES INT NOT NULL PRIMARY KEY,
@@ -74,18 +57,15 @@ NUMERO_CARABANA VARCHAR (10) NOT NULL,
 CLASE INT, -- FOREIGN KEY
 CATEGORIA INT NOT NULL, -- FOREIGN KEY
 ID_PROVEEDOR INT NOT NULL, -- FOREIGN KEY
-COMENTARIO VARCHAR INT,
+COMENTARIO VARCHAR (50),
 FEHCA_INGRESO DATE NOT NULL,
 COSTO DECIMAL NOT NULL,
 FECHA_EGRESO DATE,
 PRECIO_VENTA DECIMAL,
-MOTIVO_EGRESO VARCHAR (50),
-FOREIGN KEY (CLASE) REFERENCES Clase_de_animal (id_clase),
-FOREIGN KEY (CATEGORIA) REFERENCES Categoria_de_animal (id_categoria),
-foreign key(ID_PROVEEDOR) REFERENCES PROVEEDORES (ID_PROVEEDOR)
+MOTIVO_EGRESO VARCHAR (50)
 );
 
--- tabla donde se registran todas aquellas personas a las cuales les hemos vendido o podemos venderle hacienda
+
 CREATE TABLE CLIENTES (
 ID_CLIENTES INT NOT NULL PRIMARY KEY,
 CUIT VARCHAR(13) NOT NULL, 
@@ -94,13 +74,10 @@ APELLIDO VARCHAR(20) NOT NULL,
 DIRECCION VARCHAR(25),
 TELEFONO INT,
 EMAIL VARCHAR(30),
-ID_CONDICION_FISCAL INT NOT NULL,
-FOREIGN KEY (ID_CONDICION_FISCAL) REFERENCES Condicion_Fisca (id_condicion_fiscal)
+ID_CONDICION_FISCAL INT NOT NULL
 );
 
 
--- tabla donde se registran todas las crias que han pasado por nuestro establecimiento y se relaciona con madre-proveedores, a partir de los datos y de su
--- relacion con las demas tablas es donde encontramos los datos utilies para las decisiones del negocio
 CREATE TABLE CRIAS (
 ID_CRIAS INT  NOT NULL PRIMARY KEY,
 NUMERO_CARABANA VARCHAR (10) NOT NULL,
@@ -116,15 +93,43 @@ PESO_DESTETE DECIMAL,
 FECHA_ENTRADA_ENGORDE DATE,
 PESO_ENTRADA_ENGORDE DECIMAL,
 SUPLEMENTOS INT NOT NULL, -- FOREIGN KEY
-MOTIVO_EGRESO VARCHAR (90),
-FOREIGN KEY (CLASE) REFERENCES Clase_de_animal (id_clase),
-FOREIGN KEY (CATEGORIA) REFERENCES Categoria_de_animal (id_categoria),
-foreign key (ID_PROVEEDOR) REFERENCES PROVEEDORES (ID_PROVEEDOR),
-FOREIGN KEY (ID_MADRE) REFERENCES MADRES (ID_MADRES),
-FOREIGN KEY (SUPLEMENTOS) REFERENCES SUPLEMENTOS (ID_suplementos)
+MOTIVO_EGRESO VARCHAR (90)
 
 );
 
+ALTER TABLE Proveedores
+ADD CONSTRAINT fk_proveedores_condicionfiscal
+foreign key(ID_CONDICION_FISCAL) REFERENCES Condicion_Fiscal (id_condicion_fiscal);
 
+ALTER TABLE PADRES
+ADD CONSTRAINT FK_clase_IDclase
+FOREIGN KEY (CLASE) REFERENCES Clase_de_animal (id_clase),
+ADD CONSTRAINT FK_CATEGORIA_IDcategoria
+FOREIGN KEY (CATEGORIA) REFERENCES Categoria_de_animal (id_categoria),
+ADD CONSTRAINT FK_VENDEDOR
+foreign key(ID_PROVEEDOR) REFERENCES PROVEEDORES (ID_PROVEEDOR);
 
+ALTER TABLE MADRES
+ADD CONSTRAINT FK_CLASEM_IDCLASE
+FOREIGN KEY (CLASE) REFERENCES Clase_de_animal (id_clase),
+ADD CONSTRAINT FK_CATEGORIAM_IDCATEGORIA
+FOREIGN KEY (CATEGORIA) REFERENCES Categoria_de_animal (id_categoria),
+ADD CONSTRAINT FK_PROVEEDORM_IDPROVEDOR
+foreign key(ID_PROVEEDOR) REFERENCES PROVEEDORES (ID_PROVEEDOR);
+
+ALTER TABLE CLIENTES
+ADD CONSTRAINT FK_CLIENTES_IDCONDICIONFISCAL
+FOREIGN KEY (ID_CONDICION_FISCAL) REFERENCES Condicion_Fiscal (id_condicion_fiscal);
+
+ALTER TABLE CRIAS
+ADD CONSTRAINT FK_CLASEC_IDCLASES
+FOREIGN KEY (CLASE) REFERENCES Clase_de_animal (id_clase),
+ADD CONSTRAINT FK_CATEGORIAC_IDCATEGORIA
+FOREIGN KEY (CATEGORIA) REFERENCES Categoria_de_animal (id_categoria),
+ADD CONSTRAINT FK_PROVEEDORC_IDPROVEDOR
+foreign key (ID_PROVEEDOR) REFERENCES PROVEEDORES (ID_PROVEEDOR),
+ADD CONSTRAINT FK_MADREC_IDMADRE
+FOREIGN KEY (ID_MADRE) REFERENCES MADRES (ID_MADRES),
+ADD CONSTRAINT FK_SUPLEMENTOSC_IDSUPLEMTOS
+FOREIGN KEY (SUPLEMENTOS) REFERENCES SUPLEMENTOS (ID_suplementos);
 
