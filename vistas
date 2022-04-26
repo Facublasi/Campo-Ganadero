@@ -1,0 +1,28 @@
+# Campo-Ganadero vistas
+
+-- VIEWS PARA LISTAR LA COMPISICON DE EL STOCK DE MADRES
+SELECT count(ID_MADRES) as madre, categoria_de_animal.Categoria
+from madres
+inner join categoria_de_animal
+on (madres.Categoria = categoria_de_animal.id_categoria)
+where FECHA_EGRESO IS NULL
+GROUP BY Categoria;
+
+
+-- VISTA PARA VER LOS TERNEROS SIN DETERAR Y SU CATEGORIA (LOS DATOS NO TIENE SENTIDO PERO LA CONSULTA TRABAJA)
+SELECT count(ID_CRIAS) as CRIAS, categoria_de_animal.Categoria
+from crias
+inner join categoria_de_animal
+on (crias.Categoria = categoria_de_animal.id_categoria)
+where FECHA_ENTRADA_ENGORDE IS NULL
+GROUP BY Categoria;
+
+
+-- VISTA PARA VER LOS PESOS PROMEDIOS DE DESTETE SEGUN SU CLASE ( NO DA RESULTADO CLAROS PERO ES PORQUE NO HAY VARIACION EN LOS DATOS INGRESADOS)
+SELECT AVG(peso_destete) AS PESO , clase_de_animal.clase
+FROM CRIAS
+INNER JOIN clase_de_animal
+ON (crias.clase = clase_de_animal.id_clase)
+where peso_destete is not null
+GROUP BY CLASE;
+
