@@ -1,20 +1,24 @@
+DROP SCHEMA Campo;
+
 CREATE SCHEMA campo;
 USE campo;
 
 CREATE TABLE Condicion_Fiscal(
 id_condicion_fiscal INT NOT NULL PRIMARY KEY,
-Condicion_fiscal VARCHAR (50)
+Condicion_fiscal VARCHAR (50) NOT NULL,
+Descripcion VARCHAR (200) DEFAULT NULL
 );
-
 
 CREATE TABLE Clase_de_animal(
 id_clase INT NOT NULL PRIMARY KEY,
-CLASE VARCHAR (50)
+CLASE VARCHAR (50) NOT NULL,
+Descripcion VARCHAR (200) DEFAULT NULL
 );
 
 CREATE TABLE Categoria_de_animal(
 id_categoria INT NOT NULL PRIMARY KEY,
-Categoria VARCHAR (50)
+Categoria VARCHAR (50),
+Descripcion VARCHAR (200)
 );
 
 
@@ -24,46 +28,45 @@ SUPLEMENTO VARCHAR (50)
 );
 
 
+
 CREATE TABLE PROVEEDORES(
 ID_PROVEEDOR INT  NOT NULL PRIMARY KEY,
 CUIT VARCHAR (13) NOT NULL, 
-NOMBRE VARCHAR (20),
-APELLIDO VARCHAR (20) NOT NULL,
-DIRECCION VARCHAR (25), 
-TELEFONO VARCHAR (30),
-EMAIL VARCHAR (30),
+NOMBRE VARCHAR (50),
+APELLIDO VARCHAR (50) NOT NULL,
+DIRECCION VARCHAR (100), 
+TELEFONO VARCHAR (100),
+EMAIL VARCHAR (100),
 ID_CONDICION_FISCAL INT  NOT NULL -- foreign key
-
-
 );	
 
 
 CREATE TABLE PADRES (
 ID_PADRES INT NOT NULL PRIMARY KEY,
-NUMERO_CARABANA VARCHAR (10) NOT NULL,
+NUMERO_CARABANA VARCHAR (20) NOT NULL,
 CLASE INT , -- foreign key
 CATEGORIA INT NOT NULL, -- foreign key
 ID_PROVEEDOR INT NOT NULL, -- foreign key
 DESCRIPCION VARCHAR (50),
 FEHCA_INGRESO DATE NOT NULL,
-COSTO decimal NOT NULL,
+COSTO decimal (11,2) NOT NULL,
 FECHA_EGRESO DATE,
-PRECIO_VENTA DECIMAL ,
+PRECIO_VENTA DECIMAL (11,2),
 MOTIVO_EGRESO VARCHAR (50)
 );
 
 
 CREATE TABLE MADRES (
 ID_MADRES INT NOT NULL PRIMARY KEY,
-NUMERO_CARABANA VARCHAR (10) NOT NULL,
+NUMERO_CARABANA VARCHAR (20) NOT NULL,
 CLASE INT, -- FOREIGN KEY
 CATEGORIA INT NOT NULL, -- FOREIGN KEY
 ID_PROVEEDOR INT NOT NULL, -- FOREIGN KEY
 COMENTARIO VARCHAR (50),
 FEHCA_INGRESO DATE NOT NULL,
-COSTO DECIMAL NOT NULL,
+COSTO DECIMAL (11,2) NOT NULL,
 FECHA_EGRESO DATE,
-PRECIO_VENTA DECIMAL,
+PRECIO_VENTA DECIMAL (11,2),
 MOTIVO_EGRESO VARCHAR (50)
 );
 
@@ -73,7 +76,7 @@ ID_CLIENTES INT NOT NULL PRIMARY KEY,
 CUIT VARCHAR(13) NOT NULL, 
 NOMBRE VARCHAR(20),
 APELLIDO VARCHAR(20) NOT NULL,
-DIRECCION VARCHAR(25),
+DIRECCION VARCHAR(45),
 TELEFONO INT,
 EMAIL VARCHAR(30),
 ID_CONDICION_FISCAL INT NOT NULL
@@ -82,21 +85,20 @@ ID_CONDICION_FISCAL INT NOT NULL
 
 CREATE TABLE CRIAS (
 ID_CRIAS INT  NOT NULL PRIMARY KEY,
-NUMERO_CARABANA VARCHAR (10) NOT NULL,
+NUMERO_CARABANA VARCHAR (20) NOT NULL,
 CLASE INT NOT NULL, -- FOREIGN KEY
 CATEGORIA INT NOT NULL, -- FOREIGN KEY
 ID_PROVEEDOR INT NOT NULL, -- FOREIGN KEY
 ID_MADRE INT NOT NULL, -- FOREIGN KEY
 COMENTARIO VARCHAR (90), 
 FECHA_INGRESO DATE NOT NULL,
-COSTO DECIMAL,
+COSTO DECIMAL(11,2),
 FECHA_DESTETE DATE,
-PESO_DESTETE DECIMAL,
+PESO_DESTETE DECIMAL(11,2),
 FECHA_ENTRADA_ENGORDE DATE,
-PESO_ENTRADA_ENGORDE DECIMAL,
+PESO_ENTRADA_ENGORDE DECIMAL(11,2),
 SUPLEMENTOS INT NOT NULL, -- FOREIGN KEY
 MOTIVO_EGRESO VARCHAR (90)
-
 );
 
 ALTER TABLE Proveedores
@@ -123,8 +125,10 @@ ALTER TABLE CLIENTES
 ADD CONSTRAINT FK_CLIENTES_IDCONDICIONFISCAL
 FOREIGN KEY (ID_CONDICION_FISCAL) REFERENCES Condicion_Fiscal (id_condicion_fiscal);
 
+
+
 ALTER TABLE CRIAS
-ADD CONSTRAINT FK_CLASEC_IDCLASES
+ADD CONSTRAINT FK_CLASEC_IDdCLASES
 FOREIGN KEY (CLASE) REFERENCES Clase_de_animal (id_clase),
 ADD CONSTRAINT FK_CATEGORIAC_IDCATEGORIA
 FOREIGN KEY (CATEGORIA) REFERENCES Categoria_de_animal (id_categoria),
@@ -134,176 +138,4 @@ ADD CONSTRAINT FK_MADREC_IDMADRE
 FOREIGN KEY (ID_MADRE) REFERENCES MADRES (ID_MADRES),
 ADD CONSTRAINT FK_SUPLEMENTOSC_IDSUPLEMTOS
 FOREIGN KEY (SUPLEMENTOS) REFERENCES SUPLEMENTOS (ID_suplementos);
-
-
--- Datos
-
-INSERT INTO Condicion_Fiscal VALUES
-(1,"IVA Responsable Inscripto","Persona,juridica o Persona Fisica Responsable Inscripta"),
-(2,"IVA Responsable no Inscripto","Persona juridica no inscrpta"),
-(3,"IVA no Responsable","Persona Juridica o Persona Fisica RI que venden producctos no alcanzados por IVA"),
-(4,"IVA Sujeto Exento","PersonaJuridica o Persona Fisica que se encuentran exentas de IVA"),
-(5,"IVA Responsable Inscripto – Agente de Percepción"," "),
-(6,"Consumidor Final"," "),
-(7,"Responsable Monotributo"," "),
-(8,"Sujeto no Categorizado"," "),
-(9,"Proveedor del Exterior"," "),
-(10,"Cliente del Exterior"," "),
-(11,"Pequeño Contribuyente Eventual"," "),
-(12,"Monotributista Social"," "),
-(13,"Pequeño Contribuyente Eventual Social"," ");
-
--- COMENTARIO SOBRE INSERT DE CONDICION FISCAL, TUVE QUE COMPLETAR CON " " LA ULTIMA COLUMNA PAR QUE ME DEJE CARGARLAS
-
-INSERT INTO Clase_de_animal VALUES
-(1,"Angus Colorado"," "),
-(2,"Angus",DEFAULT),
-(3,"Hereford",DEFAULT),
-(4,"Limusin",DEFAULT),
-(5,"Limangus","3/8 limusin + 5/8 limangus"),
-(6,"Brangus",DEFAULT),
-(7,"Brangus",DEFAULT),
-(8,"Criolla",DEFAULT),
-(9,"Mestiza",DEFAULT),
-(10,"Holando",DEFAULT);
-
--- tuve que completar con " " para que me deje correr la table
- 	
-INSERT INTO Categoria_de_animal VALUES
-(1,"Ternero al pie"," -180 Kg"),
-(2,"Ternero destetado"," +180 Kg"),
-(3,"Ternera al pie"," -180 Kg"),
-(4,"Ternara destetada"," +180 Kg"),
-(5,"Novillito"," entre 230-280 Kg"),
-(6,"Vaquillona liviana"," entre 230-280 Kg"),
-(7,"novillo"," entre 290-350 Kg"),
-(8,"Vaquillona liviana"," entre 290-350 Kg"),
-(9,"Novillo pesado"," +380 Kg"),
-(10,"Vaquillona Primera paricion"," "),
-(11,"Vaquillona 2da paricion"," "),
-(12,"Vaca joven"," "),
-(13,"Vaca "," "),
-(14,"Vaca conserva"," "),
-(15,"Vaca CUT"," "),
-(16,"MEJ Liviano"," entre 230-280 Kg"),
-(17,"MEJ"," entre 290-350 Kg"),
-(18,"Toro Joven"," "),
-(19,"Toro"," "),
-(20,"SIN CLASIFICACION"," ");	
-
--- TUVE QUE COMPLETAR CON " " PARA QUE DEJE CORRER
-
-INSERT INTO proveedores VALUES
-(1,590-93-9088,"Boyce","Hindenberger","876 Grayhawk Street",959-347-1507,"bhindenberger0@lycos.com",1),
-(2,153-07-9885,"Myrvyn","Atto","86530 Dennis Park",474-912-0756,"matto1@etsy.com",1),
-(3,613-03-1978,"Noble","Trevear","957 Jackson Plaza",358-258-8103,"ntrevear2@google.com.br",1),
-(4,668-10-7594,"Cally","Jehan","2720 La Follette Crossing",403-656-4284,"cjehan3@blogs.com",1),
-(5,736-69-2168,"Jocko","Kaplin","52 Walton Way",298-916-1854,"jkaplin4@godaddy.com",2),
-(6,469-27-2105,"Margalo","Hinkensen","453 Green Hill",480-227-5908,"mhinkensen5@dedecms.com",2),
-(7,492-92-8765,"Jervis","Vyel","046 Eliot Avenue",375-849-0829,"jvyel6@cornell.edu",2),
-(8,651-66-5399,"Emyle","Cawtheray","56 Ramsey Crossing",854-564-0919,"ecawtheray7@woothemes.com",2),
-(9,803-53-6607,"Auberon","Tibbles","1573 Bartillon Junction",543-445-8210,"atibbles8@uol.com.br",2),
-(10,211-94-5938,"Shaine","Decroix","43764 Orin Plaza",274-836-2235,"sdecroix9@hexun.com",2),
-(11,446-32-4787,"Randolf","Elsmore","5370 Northport Court",315-466-6493,"relsmorea@walmart.com",2),
-(12,306-56-3343,"Tabor","Martel","12281 Dexter Drive",638-204-6271,"tmartelb@usatoday.com",2),
-(13,390-39-5284,"Aubine","Maulkin","26 Saint Paul Lane",161-194-7965,"amaulkinc@bbc.co.uk",2),
-(14,261-52-8010,"Beauregard","Casaroli","5784 Jackson Avenue",103-316-0701,"bcasarolid@theglobeandmail.com",3),
-(15,446-79-6758,"Georgeanne","Penson","403 Golf Terrace",149-548-8792,"gpensone@over-blog.com",3),
-(16,363-75-8801,"Myrtice","Allward","7 Sutherland Drive",882-116-3782,"mallwardf@webeden.co.uk",3),
-(17,685-63-2388,"Vidovic","Heugh","85 Golf Course Parkway",761-190-4502,"vheughg@sciencedirect.com",3),
-(18,198-07-8441,"Sarge","Jannaway","27166 Monument Center",486-202-2145,"sjannawayh@google.ru",3),
-(19,165-44-3634,"Lionel","Vevers","9160 Annamark Pass",171-650-3977,"lveversi@furl.net",3),
-(20,146-86-1735,"Theadora","Belmont","1494 Fordem Parkway",184-992-0226,"tbelmontj@ezinearticles.com",3),
-(21,327-38-2557,"Arvin","Kyffin","39 Northview Circle",487-855-4995,"akyffink@hc360.com",3),
-(22,614-84-4323,"Giles","Guilfoyle","2 Mcguire Road",109-488-4034,"gguilfoylel@bloomberg.com",3),
-(23,134-47-5999,"Belicia","Broz","63826 Leroy Road",586-189-3565,"bbrozm@artisteer.com",3),
-(24,386-85-5615,"Siffre","Dows","58 Manufacturers Pass",487-732-5975,"sdowsn@joomla.org",3),
-(25,352-27-9891,"Magda","Scotchmur","1 Reindahl Point",417-491-3642,"mscotchmuro@sakura.ne.jp",4),
-(26,718-01-5467,"Lavinia","Oulett","98 Starling Pass",310-469-4707,"loulettp@omniture.com",4),
-(27,741-09-5224,"Dolores","Laister","3 Elka Trail",682-732-9581,"dlaisterq@netscape.com",4),
-(28,859-82-5197,"Giacomo","Southby","9697 Algoma Road",231-934-528,"gsouthbyr@boston.com",4),
-(29,286-57-7414,"Ardella","Bennet","12 Dapin Parkway",999-209-4251,"abennets@msu.edu",4),
-(30,244-68-5447,"Marwin","Challace","8 Caliangt Street",430-173-6013,"mchallacet@blogtalkradio.com",4),
-(31,464-03-9324,"Kerri","Iles","32610 Haas Parkway",356-693-9894,"kilesu@xrea.com",4),
-(32,109-52-5253,"Avis","Bartalini","79176 Manitowish Circle",168-886-1509,"abartaliniv@buzzfeed.com",4),
-(33,390-07-2587,"Sergio","Colbourn","98940 Spenser Junction",746-358-5338,"scolbournw@biglobe.ne.jp",4),
-(34,641-98-8565,"Jarrad","Croisier","708 Grover Drive",920-533-4106,"jcroisierx@sfgate.com",4),
-(35,438-47-0423,"Halie","Georgeon","30 Anzinger Road",943-125-7048,"hgeorgeony@macromedia.com",4),
-(36,726-32-8616,"Ripley","Escalero","2 Pine View Drive",409-984-2158,"rescaleroz@usda.gov",4),
-(37,798-78-3550,"Karee","Bartunek","9865 Canary Plaza",192-385-3605,"kbartunek10@java.com",4),
-(38,225-45-6276,"Barthel","Skilton","8 Sugar Road",749-342-0201,"bskilton11@spotify.com",4),
-(39,714-24-8512,"Ruggiero","Bianco","0028 Talisman Court",922-614-3993,"rbianco12@github.io",4),
-(40,140-23-3931,"Adolph","Gethings","905 Marcy Point",908-640-4510,"agethings13@jimdo.com",4),
-(41,846-49-9884,"Mommy","Budleigh","3 Crowley Road",284-407-3882,"mbudleigh14@sohu.com",4),
-(42,181-68-4999,"Gonzales","Eddisforth","2 Sachtjen Pass",748-285-1270,"geddisforth15@cisco.com",4),
-(43,869-96-0249,"Juliann","Oakhill","571 Prairieview Plaza",928-812-0387,"joakhill16@forbes.com",4),
-(44,897-79-9629,"Regine","O'Hannay","80376 Clove Road",588-336-7070,"rohannay17@mlb.com",4),
-(45,561-31-8842,"Weston","Daynter","1088 Fremont Street",628-627-1046,"wdaynter18@qq.com",4),
-(46,108-56-8747,"Corena","Grelak","90 Nelson Way",807-825-9839,"cgrelak19@webs.com",4),
-(47,622-88-7206,"Kalli","Matissoff","4 Gateway Lane",962-163-4249,"kmatissoff1a@army.mil",1),
-(48,706-63-0833,"Silvie","MacCurley","1 Bowman Avenue",810-489-5976,"smaccurley1b@ovh.net",1),
-(49,561-98-7455,"Francklyn","Nannoni","4 Thompson Pass",481-640-4796,"fnannoni1c@howstuffworks.com",1),
-(50,680-97-4865,"Valaria","Yurin","2162 Elka Crossing",499-628-8363,"vyurin1d@miibeian.gov.cn",1),
-(51,444-22-3611,"Delphinia","Herculson","6127 Heffernan Crossing",770-440-3026,"dherculson1e@reverbnation.com",1),
-(52,701-73-6757,"Wain","BNUeckers","427 Schiller Terrace",232-507-7310,"wbeckers1f@ifeng.com",1),
-(53,895-18-5420,"Cate","Maunsell","4697 Clyde Gallagher Trail",141-823-1411,"cmaunsell1g@geocities.jp",1),
-(54,612-66-7593,"Tommie","Ramberg","027 Sutteridge Point",349-779-4825,"tramberg1h@independent.co.uk",1),
-(55,764-32-6069,"Bennie","Goldthorp","6 Amoth Circle",702-276-7349,"bgoldthorp1i@vkontakte.ru",1);
-
--- LOS CUITS SON SEGUN EL FORMATO DE SSN ESTADOUNIDENSES Y LOS NUMERO DE TELEFONO TAMBIEN
--- 2do problema, la misma persona me podria quedar registrada como cliente y como proveedor
--- tendria dos PK 
-
-INSERT INTO padres VALUES
-(1,"AR-RS001-A001/8",5,18,15,NULL,"05-03-17",821270.28,NULL,NULL,NULL),
-(2,"AR-RS001-A002/8",5,18,15,NULL,"02-06-17",743449.79,NULL,NULL,NULL),
-(3,"AR-RS001-A003/8",5,18,15,NULL,"10-08-21",1648475.17,NULL,NULL,NULL),
-(4,"AR-RS001-A004/8",5,18,15,NULL,"07-02-22",318121.78,NULL,NULL,NULL),
-(5,"AR-RS001-A005/8",5,18,15,NULL,"18-09-18",672384.39,"03-03-22",1791409.88,NULL),
-(6,"AR-RS001-A006/8",5,18,15,NULL,"18-05-21",1305689.02,NULL,NULL,NULL),
-(7,"AR-RS001-A007/8",5,19,15,NULL,"04-01-17",507631.47,"26-08-22",426103.13,NULL),
-(8,"AR-RS001-A008/8",5,19,15,NULL,"22-07-18",1676808.02,"07-11-21",791688.79,NULL),
-(9,"AR-RS001-A009/8",5,19,15,NULL,"18-09-21",1063550.32,NULL,NULL,NULL),
-(10,"AR-RS001-A010/8",5,19,15,NULL,"06-12-18",440710.94,"17-02-22",1064097.99,NULL),
-(11,"AR-RS001-A011/8",5,19,15,NULL,"31-01-22",578193.27,NULL,NULL,NULL),
-(12,"AR-RS001-A012/8",5,19,15,NULL,"09-12-22",1625999.44,NULL,NULL,NULL),
-(13,"AR-RS001-A013/8",5,19,15,NULL,"13-08-18",1177619.17,"23-07-22",834822.89,NULL),
-(14,"AR-RS001-A014/8",5,19,15,NULL,"31-08-18",619273.84,"27-11-21",1650045.70,NULL),
-(15,"AR-RS001-A015/8",5,19,15,NULL,"28-11-18",660756.86,"17-03-22",343911.61,NULL),
-(16,"AR-RS001-A016/8",5,19,15,NULL,"22-01-22",1256218.52,NULL,NULL,NULL),
-(17,"AR-RS001-A017/8",5,19,20,NULL,"11-07-21",1419527.05,NULL,NULL,NULL),
-(18,"AR-RS001-A018/8",5,19,20,NULL,"23-07-21",1726799.91,NULL,NULL,NULL),
-(19,"AR-RS001-A019/8",5,19,20,NULL,"12-12-21",277706.49,NULL,NULL,NULL),
-(20,"AR-RS001-A020/8",1,19,20,NULL,"17-09-21",323095.56,NULL,NULL,NULL),
-(21,"AR-RS001-A021/8",1,19,20,NULL,"30-06-21",1384489.21,NULL,NULL,NULL),
-(22,"AR-RS001-A022/8",1,19,20,NULL,"16-09-17",933698.57,"12-08-22",1757107.80,NULL),
-(23,"AR-RS001-A023/8",1,19,20,NULL,"25-05-21",1550869.01,NULL,NULL,NULL),
-(24,"AR-RS001-A024/8",1,19,20,NULL,"28-05-21",370417.75,NULL,NULL,NULL),
-(25,"AR-RS001-A025/8",1,19,20,NULL,"27-05-21",661518.86,NULL,NULL,NULL),
-(26,"AR-RS001-A026/8",1,19,20,NULL,"06-09-21",1350086.90,NULL,NULL,NULL),
-(27,"AR-RS001-A027/8",1,19,20,NULL,"20-09-21",309088.32,NULL,NULL,NULL),
-(28,"AR-RS001-A028/8",1,19,35,NULL,"30-11-19",1661420.46,"10-09-22",624686.26,NULL),
-(29,"AR-RS001-A029/8",1,19,35,NULL,"05-06-17",1235234.72,"07-12-22",876027.95,NULL),
-(30,"AR-RS001-A030/8",1,19,35,NULL,"06-03-17",747259.65,NULL,NULL,NULL),
-(31,"AR-RS001-A031/8",1,19,35,NULL,"22-05-19",935825.47,"07-10-21",1309718.88,NULL),
-(32,"AR-RS001-A032/8",1,19,35,NULL,"26-03-19",857038.36,"10-07-22",525837.96,NULL),
-(33,"AR-RS001-A033/8",1,19,35,NULL,"23-12-21",661081.87,NULL,NULL,NULL),
-(34,"AR-RS001-A034/8",1,19,35,NULL,"07-11-21",1049903.86,NULL,NULL,NULL),
-(35,"AR-RS001-A035/8",1,19,35,NULL,"02-11-17",341135.69,NULL,NULL,NULL),
-(36,"AR-RS001-A036/8",1,19,35,NULL,"02-05-17",1435278.73,"28-03-22",442748.56,NULL),
-(37,"AR-RS001-A037/8",1,19,35,NULL,"09-11-21",1240971.28,NULL,NULL,NULL),
-(38,"AR-RS001-A038/8",2,19,35,NULL,"17-02-20",1380048.90,"26-09-22",544001.22,NULL),
-(39,"AR-RS001-A039/8",2,19,35,NULL,"16-03-20",1774417.47,"07-05-22",674261.14,NULL),
-(40,"AR-RS001-A040/8",2,19,35,NULL,"23-06-20",1393367.62,"14-12-21",273433.30,NULL),
-(41,"AR-RS001-A041/8",2,19,35,NULL,"18-11-21",825375.54,NULL,NULL,NULL),
-(42,"AR-RS001-A042/8",2,19,35,NULL,"11-02-22",778822.12,NULL,NULL,NULL),
-(43,"AR-RS001-A043/8",2,19,35,NULL,"03-03-17",508608.64,"24-11-22",636054.80,NULL),
-(44,"AR-RS001-A044/8",2,19,45,NULL,"24-12-22",1725573.22,NULL,NULL,NULL),
-(45,"AR-RS001-A045/8",2,19,45,NULL,"22-02-21",1382727.18,NULL,NULL,NULL),
-(46,"AR-RS001-A046/8",3,19,45,NULL,"16-07-21",1477005.79,"28-01-22",1707095.11,NULL),
-(47,"AR-RS001-A047/8",3,19,45,NULL,"16-11-21",860554.07,NULL,NULL,NULL),
-(48,"AR-RS001-A048/8",3,19,45,NULL,"08-11-22",1696876.67,NULL,NULL,NULL),
-(49,"AR-RS001-A049/8",3,19,45,NULL,"13-04-20",519687.39,NULL,NULL,NULL),
-(50,"AR-RS001-A050/8",3,19,45,NULL,"06-08-20",1707580.45,NULL,NULL,NULL)
-
 
