@@ -1,0 +1,39 @@
+-- este escrip muestra los datos de uno de los animales encuestion,
+-- la funcion deberia en primera instancia poder devolver la diferencia de dias entre la la fecha de destete y la fecha de entrada a engorde
+   como algo adicional o en otra funcion la diferencia de peso entre una fecha y la otra 
+   y como algo super adicional tambien en la misma funcion o en una tercera los kilos aumentado por dia (f(2)/f(1))
+
+ ** la funcion cumple con el primero de los objetivos planteados
+ 
+-- este escrip muestra los datos de uno de los animales encuestion,   
+
+Select id_crias , fecha_destete , peso_destete , fecha_entrada_engorde , peso_entrada_engorde
+from crias
+where id_crias = 1603;
+
+DELIMITER $$
+
+CREATE FUNCTION `dias_en_recria` ( par_id_crias INT )
+RETURNS int
+reads sql data
+BEGIN
+     DECLARE DIAS INT; 
+     declare fecha1 date;
+     declare fecha2 date;
+     
+     set fecha1 = (select fecha_destete 
+					     from crias
+                         where id_crias = (par_id_crias));
+                         
+      SET fecha2 = (select fecha_entrada_engorde 
+					              from crias
+                                  where id_crias =  (par_id_crias)  );
+                                  
+	SET DIAS = (DATEDIFF(fecha1 ,fecha2 ));
+	
+    RETURN DIAS;
+    
+END ;
+
+DELIMITER $$
+
