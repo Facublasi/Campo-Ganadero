@@ -1,0 +1,8 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `new_procedure`()
+BEGIN
+select ID_CRIAS, id_madre , FECHA_INGRESO, costo, FECHA_DESTETE, peso_destete , FECHA_ENTRADA_ENGORDE , PESO_ENTRADA_ENGORDE , PESO_ENTRADA_ENGORDE - PESO_DESTETE as ganancia_peso
+from crias
+where fecha_entrada_engorde is not null
+order by id_madre;
+END 
+
